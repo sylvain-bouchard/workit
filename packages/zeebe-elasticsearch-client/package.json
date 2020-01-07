@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.4",
-    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/axios": "0.14.0",
     "@types/debug": "^4.1.5",
     "@types/events": "^3.0.0",
