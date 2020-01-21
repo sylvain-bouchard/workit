@@ -17,7 +17,7 @@ export class HelloWorldTask extends TaskBase<IMessage> {
       console.log(`${properties.bpmnProcessId}::${properties.processInstanceId} Servus!`);
       
       const response = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
-
+      message.body.test = true;
       console.log('\ndata:');
       console.log(response.data);
 

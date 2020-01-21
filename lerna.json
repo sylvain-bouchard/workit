@@ -26,5 +26,5 @@
     "cacheDir": ".changelog"
   },
   "npmClient": "yarn",
-  "version": "independent"
+  "version": "4.0.3"
 }
