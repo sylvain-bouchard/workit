@@ -34,6 +34,7 @@ import {
 } from 'workit-types';
 import { CamundaMessage } from './camundaMessage';
 import { CamundaRepository } from './repositories/camundaRepository';
+
 export class CamundaBpmClient implements IClient<ICamundaService>, IWorkflowClient {
   private static _getWorkflowParams(options?: Partial<IWorkflowOptions & IPaginationOptions>): any {
     const _params = {} as any;
@@ -57,7 +58,12 @@ export class CamundaBpmClient implements IClient<ICamundaService>, IWorkflowClie
       this._config.subscriptionOptions,
       async (camundaObject: { task: IVariablePayload; taskService: any }) => {
         const [message, service] = CamundaMessage.wrap(camundaObject);
-        await onMessageReceived(message, service);
+
+        // Check if task is reserved to a particular worker id.
+        // If it is not, proceed.
+        if (!this._isTaskReserved(message)) {
+          await onMessageReceived(message, service);
+        }
       }
     );
 
@@ -176,5 +182,12 @@ export class CamundaBpmClient implements IClient<ICamundaService>, IWorkflowClie
   }
   private _hasBpmnProcessId(request: IWorkflowDefinitionRequest): request is IWorkflowProcessIdDefinition {
     return (request as IWorkflowProcessIdDefinition).bpmnProcessId !== undefined;
+  }
+  private _isTaskReserved(message: IMessage): boolean {
+    const reservedTo = message.body.reservedTo;
+    if (!reservedTo) {
+      return false;
+    }
+    return (reservedTo !== message.properties.workerId);
   }
 }
